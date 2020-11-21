@@ -1,2 +1,3 @@
 *.pptx*
 *.docx*
+.ipynb_checkpoints/
