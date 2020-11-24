@@ -95,9 +95,6 @@ left_full = left * Δt
 right_full = right * Δt
 
 
-max_val = np.where(contrac_aligned == contrac_aligned.max())[0][0]
-peaks_height = (contrac_aligned.max() - contrac_aligned[max_val-peaks_distance: max_val+peaks_distance].min()) * 0.2
-# In order to plot half-widths correctly, we should use contrac_aligned instead of zhang
 half_widths, widths_heights_half, left_half, right_half  = peak_widths(contrac_aligned, peaks, rel_height=0.5)
 half_widths *= Δt
 
