@@ -3,15 +3,15 @@
 
 
 experiment_name = '24_November_2020'
-path_to_file = 'contraction.csv'
-duration = 110 # mins
+path_to_file = 'task2.csv'
 
 
 substances = {
-			'KCL': (30, 37), 
-			'Carbachol': (56, 62)
+			'Chelerythrine': (43, 53),
+			'Oxytocine': (84, 92),
+            'Oxytocine+Chelerythrine': (124, 134)
 			 }
-
+Δt=0.1/60
 
 #################################################################################
 
@@ -26,7 +26,7 @@ import os
 if not os.path.exists(experiment_name):
 	os.mkdir(experiment_name)
 
-	
+
 #---------------------------- ANALYSIS PART-----------------------------------
 
 import numpy as np
@@ -41,11 +41,11 @@ plt.style.use('dark_background')
 color=iter(cycle(plt.cm.rainbow(np.linspace(0,1,len(substances)))))
 
 # loading the data
-contrac = np.loadtxt(path_to_file, delimiter=',')
+contrac = np.loadtxt(path_to_file, delimiter=',',
+                    usecols=1, skiprows=12000)
 
-# Determine time vector
-Δt = duration / len(contrac)
-time = np.arange(0, duration, Δt)
+# Determine duration
+time = np.arange(0, Δt*len(contrac), Δt)
 
 # Find baseline and remove it from contraction trace
 base = peakutils.baseline(contrac, 5)
@@ -57,7 +57,7 @@ fig, axs = plt.subplots(2, 1, figsize=(20, 8), dpi=130)
 axs[0].plot(time, contrac)
 for substance, times in substances.items():
 	axs[0].axvspan(*times, facecolor=next(color), edgecolor='None', alpha=0.5, label=substance)
-	
+
 axs[0].legend(title='Application')
 axs[0].set_title('Before the alignment procedure')
 
@@ -96,12 +96,12 @@ axs[1].set(xlabel='time [min]')
 axs[1].set_xlim([0, 30])
 
 fig.savefig(experiment_name + '/Peaks_half_widths_amplitude.pdf')
-			
+
 # plotting limits of integratiobn
-fig, axs = plt.subplots(len(substances), 1, 
+fig, axs = plt.subplots(len(substances), 1,
 						figsize=(20, 4*len(substances)), dpi=130);
 
-for ax, substance, times in zip(axs, list(substances.keys()), list(substances.values())): 
+for ax, substance, times in zip(axs, list(substances.keys()), list(substances.values())):
 	ax.plot(time, contrac_aligned, label=substance)
 	ax.legend()
 	ax.hlines(widths_heights, left_full, right_full, color='red')
@@ -115,25 +115,25 @@ fig.savefig(experiment_name + '/Limits_of_integration.pdf')
 amps = []
 areas = []
 for idx, peak in enumerate(peaks):
-    neibs = np.diff( contrac_aligned[peak-300:peak+300] ) 
-    amp = contrac_aligned[peak] 
+    neibs = np.diff( contrac_aligned[peak-300:peak+300] )
+    amp = contrac_aligned[peak]
     amps.append(amp)
     area = simps(
 				contrac_aligned[np.where( (time > left_full[idx]) & (time < right_full[idx]))],
                 time[np.where( (time > left_full[idx]) & (time < right_full[idx]))] * 60
-				) 
+				)
     areas.append(area)
-	
+
 # Separating amplitudes, areas, half_widths
-amplitudes_sep = {key: [] for key in substances.keys()} 
-areas_sep = {key: [] for key in substances.keys()} 
-half_widths_sep = {key: [] for key in substances.keys()} 
+amplitudes_sep = {key: [] for key in substances.keys()}
+areas_sep = {key: [] for key in substances.keys()}
+half_widths_sep = {key: [] for key in substances.keys()}
 
 for key, times in substances.items():
 	amplitudes_sep[key] = amps[np.argmax(time[peaks] > times[0]) : np.argmax(time[peaks] > times[1])]
 	areas_sep[key] = areas[np.argmax(time[peaks] > times[0]) : np.argmax(time[peaks] > times[1])]
 	half_widths_sep[key] = half_widths[np.argmax(time[peaks] > times[0]) : np.argmax(time[peaks] > times[1])]
-	
+
 #------------------------------ PLOTTING ERRORBARS----------------------------------
 # calculating means and standart errors
 labels = [key for key in substances.keys()]
@@ -142,23 +142,23 @@ x = np.arange(len(labels))
 for d in [amplitudes_sep, areas_sep, half_widths_sep]:
 	for k, v in d.items():
 		d[k] = (np.mean(v), np.std(v)/np.sqrt(len(v)))
-	
+
 fig, axs = plt.subplots(1, 3, dpi=150, figsize=(16, 4))
 for idx, d in enumerate([amplitudes_sep, areas_sep, half_widths_sep]):
 	y = [ d[ labels[i] ][0] for i in range(len(labels))]
-	error = [ d[ labels[i] ][1] for i in range(len(labels))] 
-	axs[idx].bar(x, y, yerr=error, align='center', 
+	error = [ d[ labels[i] ][1] for i in range(len(labels))]
+	axs[idx].bar(x, y, yerr=error, align='center',
 				 alpha=0.8, ecolor='red', capsize=10, facecolor='silver')
 	axs[idx].set_xticks(x)
 	axs[idx].set_xticklabels(labels)
-	
+
 axs[0].set_title('Contraction amplitude, g')
 axs[2].set_title('Contraction half_widths, min')
 axs[1].set_title('Contraction areas, $g \cdot s$')
 
 fig.savefig(experiment_name + '/Errorbars.pdf')
-	
-	
-	
-	
-	
+
+
+
+
+
