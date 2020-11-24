@@ -10,8 +10,13 @@ substances = {
 			'Chelerythrine': (43, 53),
 			'Oxytocine': (84, 92),
             'Oxytocine+Chelerythrine': (124, 134)
-			 }
+            }
+
 Δt=0.1/60
+
+peaks_height = 0.03
+peaks_distance = 200
+width_height = 0.93
 
 #################################################################################
 
@@ -77,8 +82,10 @@ fig.savefig(experiment_name + '/General_traces.pdf')
 aligned = BaselineRemoval(contrac_aligned)
 zhang = aligned.ZhangFit()
 
-peaks, peak_values = find_peaks(zhang, height=0.5, distance=200)
-widths, widths_heights, left, right = peak_widths(zhang, peaks, rel_height=0.98)
+peaks, peak_values = find_peaks(zhang, height=peaks_height,
+        distance=peaks_distance)
+widths, widths_heights, left, right = peak_widths(zhang, peaks,
+        rel_height=width_height)
 left = left.astype(int)
 right = right.astype(int)
 left_full = left * Δt
