@@ -81,22 +81,18 @@ fig.savefig(experiment_name + '/General_traces.pdf')
 
 aligned = BaselineRemoval(contrac_aligned)
 zhang = aligned.ZhangFit()
-<<<<<<< HEAD
-peak_height = 0.03
-peaks, peak_values = find_peaks(zhang, height=peak_height, distance=300)
-widths, widths_heights, left, right = peak_widths(zhang, peaks, rel_height=0.98)
-=======
 
 peaks, peak_values = find_peaks(zhang, height=peaks_height,
         distance=peaks_distance)
 widths, widths_heights, left, right = peak_widths(zhang, peaks,
         rel_height=width_height)
->>>>>>> 99365b7756be8da257271f9f770a4ed19e4f2306
 left = left.astype(int)
 right = right.astype(int)
 left_full = left * Δt
 right_full = right * Δt
-half_widths, widths_heights_half, left_half, right_half  = peak_widths(zhang, peaks, rel_height=0.5)
+peaks2, _ = find_peaks(contrac_aligned, height=peaks_height,
+        distance=peaks_distance)
+half_widths, widths_heights_half, left_half, right_half  = peak_widths(contrac_aligned, peaks2, rel_height=0.5)
 half_widths *= Δt
 
 fig, axs = plt.subplots(2, 1, figsize=(20, 8), dpi=130)
