@@ -127,7 +127,7 @@ fig.savefig(experiment_name + '/Limits_of_integration.pdf')
 amps = []
 areas = []
 for idx, peak in enumerate(peaks):
-    neibs = np.diff( contrac_aligned[peak-300:peak+300] )
+    neibs = np.diff( contrac_aligned[peak-peaks_distance:peak+peaks_distance] )
     amp = contrac_aligned[peak]
     amps.append(amp)
     area = simps(
