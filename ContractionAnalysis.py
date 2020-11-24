@@ -14,7 +14,6 @@ substances = {
 
 Δt=0.1/60
 
-peaks_height = 0.03
 peaks_distance = 200
 width_height = 0.93
 
@@ -82,6 +81,10 @@ fig.savefig(experiment_name + '/General_traces.pdf')
 aligned = BaselineRemoval(contrac_aligned)
 zhang = aligned.ZhangFit()
 
+# Determine threshold height of the peak
+max_val = np.where(zhang == zhang.max())[0][0]
+peaks_height = (zhang.max() - zhang[max_val-peaks_distance: max_val+peaks_distance].min()) * 0.2
+
 peaks, peak_values = find_peaks(zhang, height=peaks_height,
         distance=peaks_distance)
 widths, widths_heights, left, right = peak_widths(zhang, peaks,
@@ -90,6 +93,11 @@ left = left.astype(int)
 right = right.astype(int)
 left_full = left * Δt
 right_full = right * Δt
+
+
+max_val = np.where(contrac_aligned == contrac_aligned.max())[0][0]
+peaks_height = (contrac_aligned.max() - contrac_aligned[max_val-peaks_distance: max_val+peaks_distance].min()) * 0.2
+# In order to plot half-widths correctly, we should use contrac_aligned instead of zhang
 peaks2, _ = find_peaks(contrac_aligned, height=peaks_height,
         distance=peaks_distance)
 half_widths, widths_heights_half, left_half, right_half  = peak_widths(contrac_aligned, peaks2, rel_height=0.5)
