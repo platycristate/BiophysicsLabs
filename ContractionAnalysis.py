@@ -91,21 +91,19 @@ widths, widths_heights, left, right = peak_widths(zhang, peaks,
         rel_height=width_height)
 left = left.astype(int)
 right = right.astype(int)
-left_full = left * Δt
-right_full = right * Δt
 
 
-half_widths, widths_heights_half, left_half, right_half  = peak_widths(contrac_aligned, peaks, rel_height=0.5)
-half_widths *= Δt
+half_widths, widths_heights_half, left_half, right_half = peak_widths(zhang, peaks, rel_height=0.5)
+half_widths *= Δt*60000
 
 fig, axs = plt.subplots(2, 1, figsize=(20, 8), dpi=130)
 axs[0].plot(time, contrac_aligned)
 axs[0].plot(time[peaks], contrac_aligned[peaks], 'x')
 
 axs[1].plot(time, contrac_aligned)
-axs[1].hlines(widths_heights_half, left_half*Δt, right_half*Δt, color='red')
+axs[1].hlines(contrac_aligned[left_half.astype(int)], left_half*Δt, right_half*Δt, color='red')
 axs[1].set(xlabel='time [min]')
-axs[1].set_xlim([0, 30])
+axs[1].set_xlim([30,35])
 
 fig.savefig(experiment_name + '/Peaks_half_widths_amplitude.pdf')
 
@@ -116,7 +114,7 @@ fig, axs = plt.subplots(len(substances), 1,
 for ax, substance, times in zip(axs, list(substances.keys()), list(substances.values())):
 	ax.plot(time, contrac_aligned, label=substance)
 	ax.legend()
-	ax.hlines(widths_heights, left_full, right_full, color='red')
+	ax.hlines(widths_heights, left*Δt, right*Δt, color='red')
 	ax.set_xlim(list(times))
 
 axs[-1].set(xlabel='time [min]')
@@ -127,13 +125,11 @@ fig.savefig(experiment_name + '/Limits_of_integration.pdf')
 amps = []
 areas = []
 for idx, peak in enumerate(peaks):
-    neibs = np.diff( contrac_aligned[peak-peaks_distance:peak+peaks_distance] )
     amp = contrac_aligned[peak]
     amps.append(amp)
     area = simps(
-				contrac_aligned[np.where( (time > left_full[idx]) & (time < right_full[idx]))],
-                time[np.where( (time > left_full[idx]) & (time < right_full[idx]))] * 60
-				)
+            contrac_aligned[left[idx]:right[idx]],
+            60000*time[left[idx]:right[idx]])
     areas.append(area)
 
 # Separating amplitudes, areas, half_widths
@@ -165,8 +161,8 @@ for idx, d in enumerate([amplitudes_sep, areas_sep, half_widths_sep]):
 	axs[idx].set_xticklabels(labels)
 
 axs[0].set_title('Contraction amplitude, g')
-axs[2].set_title('Contraction half_widths, min')
-axs[1].set_title('Contraction areas, $g \cdot s$')
+axs[2].set_title('Contraction half_widths, ms')
+axs[1].set_title('Contraction areas, $g \cdot ms$')
 
 fig.savefig(experiment_name + '/Errorbars.pdf')
 
