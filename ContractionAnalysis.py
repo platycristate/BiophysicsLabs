@@ -2,7 +2,7 @@
 ###################################################################################
 
 
-experiment_name = '24_November_2020'
+experiment_name = 'Task2'
 path_to_file = 'task2.csv'
 
 
@@ -76,8 +76,8 @@ fig.savefig(experiment_name + '/General_traces.pdf')
 
 aligned = BaselineRemoval(contrac_aligned)
 zhang = aligned.ZhangFit()
-
-peaks, peak_values = find_peaks(zhang, height=0.5, distance=200)
+peak_height = 0.03
+peaks, peak_values = find_peaks(zhang, height=peak_height, distance=300)
 widths, widths_heights, left, right = peak_widths(zhang, peaks, rel_height=0.98)
 left = left.astype(int)
 right = right.astype(int)
