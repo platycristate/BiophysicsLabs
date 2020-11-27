@@ -7,9 +7,9 @@ path_to_file = 'task2.csv'
 
 
 substances = {
-			'Chelerythrine': (43, 53),
-			'Oxytocine': (84, 92),
-            'Oxytocine+Chelerythrine': (124, 134)
+            'Cheler': (43, 53),
+            'Oxyt': (84, 92),
+            'Oxyt+Cheler': (124, 134)
             }
 
 Δt=0.1/60
@@ -97,15 +97,20 @@ right_full = right * Δt
 
 half_widths, widths_heights_half, left_half, right_half  = peak_widths(contrac_aligned, peaks, rel_height=0.5)
 half_widths *= Δt
+# to remove outliers; so called "temporary solution to the problem"
+half_widths = half_widths[half_widths < 2*peaks_distance*Δt]
 
-fig, axs = plt.subplots(2, 1, figsize=(20, 8), dpi=130)
+fig, axs = plt.subplots(len(substances)+1, 1, figsize=(20, 4*(len(substances)+1)), dpi=130)
 axs[0].plot(time, contrac_aligned)
 axs[0].plot(time[peaks], contrac_aligned[peaks], 'x')
 
-axs[1].plot(time, contrac_aligned)
-axs[1].hlines(widths_heights_half, left_half*Δt, right_half*Δt, color='red')
-axs[1].set(xlabel='time [min]')
-axs[1].set_xlim([0, 30])
+for ax, substance, times in zip(axs[1:], list(substances.keys()), list(substances.values())):
+	ax.plot(time, contrac_aligned, label=substance)
+	ax.legend()
+	ax.hlines(widths_heights_half, left_half*Δt, right_half*Δt, color='red')
+	ax.set_xlim(list(times))
+
+axs[-1].set(xlabel='time [min]')
 
 fig.savefig(experiment_name + '/Peaks_half_widths_amplitude.pdf')
 
@@ -159,8 +164,7 @@ fig, axs = plt.subplots(1, 3, dpi=150, figsize=(16, 4))
 for idx, d in enumerate([amplitudes_sep, areas_sep, half_widths_sep]):
 	y = [ d[ labels[i] ][0] for i in range(len(labels))]
 	error = [ d[ labels[i] ][1] for i in range(len(labels))]
-	axs[idx].bar(x, y, yerr=error, align='center',
-				 alpha=0.8, ecolor='red', capsize=10, facecolor='silver')
+	axs[idx].bar(x, y, yerr=error, align='center', alpha=0.8, ecolor='red', capsize=10, facecolor='silver')
 	axs[idx].set_xticks(x)
 	axs[idx].set_xticklabels(labels)
 
