@@ -98,7 +98,8 @@ right_full = right * Δt
 half_widths, widths_heights_half, left_half, right_half  = peak_widths(contrac_aligned, peaks, rel_height=0.5)
 half_widths *= Δt
 # to remove outliers; so called "temporary solution to the problem"
-half_widths = half_widths[half_widths < 2*peaks_distance*Δt]
+outliers = half_widths < 2*peaks_distance*Δt
+half_widths, left_half, right_half = half_widths[outliers], left_half[outliers], right_half[outliers]
 
 fig, axs = plt.subplots(len(substances)+1, 1, figsize=(20, 4*(len(substances)+1)), dpi=130)
 axs[0].plot(time, contrac_aligned)
