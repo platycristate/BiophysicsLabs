@@ -30,12 +30,15 @@ hws = pd.DataFrame(dict([ (k, pd.Series(v)) for k, v in half_widths_sep.items() 
 
 
 hist = amps.hist(bins=15, figsize=(12,10));
+plt.suptitle('Histograms for amplitudes', fontsize=20)
 plt.savefig(experiment_name + '/Stats/histograms_amps.pdf')
 
 hist = areas.hist(bins=15, figsize=(12,10));
+plt.suptitle('Histograms for areas', fontsize=20)
 plt.savefig(experiment_name + '/Stats/histograms_areas.pdf')
 
 hist = hws.hist(bins=15, figsize=(12,10));
+plt.suptitle('Histograms for half-widths', fontsize=20)
 plt.savefig(experiment_name + '/Stats/histograms_hws.pdf')
 
 
@@ -71,6 +74,7 @@ for i in p_values:
 pval_df.to_csv(experiment_name + '/Stats/t_tests_pvals.csv')
 
 # saving results of shapiro test
-print(shapiro_res)
+print('Results of Shapiro-Wilco tests: \n', shapiro_res)
+
 with open(experiment_name + '/Stats/shapiro_res.p', 'wb') as f:
 	pickle.dump(shapiro_res, f)
