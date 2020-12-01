@@ -40,6 +40,7 @@ import peakutils
 from scipy.signal import find_peaks, peak_widths
 from scipy.integrate import simps
 from BaselineRemoval import BaselineRemoval
+import pickle
 plt.style.use('dark_background')
 
 color=iter(cycle(plt.cm.rainbow(np.linspace(0,1,len(substances)))))
@@ -150,6 +151,13 @@ for key, times in substances.items():
 	areas_sep[key] = areas[np.argmax(time[peaks] > times[0]) : np.argmax(time[peaks] > times[1])]
 	half_widths_sep[key] = half_widths[np.argmax(time[peaks] > times[0]) : np.argmax(time[peaks] > times[1])]
 
+# Saving variables for statistic analysis
+with open(experiment_name + '/amplitudes_sep.p', 'wb') as f:
+    pickle.dump(amplitudes_sep, f)
+with open(experiment_name + '/areas_sep.p', 'wb') as f:
+    pickle.dump(areas_sep, f)
+with open(experiment_name + '/half_widths_sep.p', 'wb') as f:
+    pickle.dump(half_widths_sep, f)
 #------------------------------ PLOTTING ERRORBARS----------------------------------
 # calculating means and standart errors
 labels = [key for key in substances.keys()]
