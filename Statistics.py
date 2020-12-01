@@ -1,8 +1,12 @@
+#----------------------------------------INPUT INFORMATION------------------------------
+
 # threshold p-value for t_test or U-test
 thresh = 0.05
+experiment_name = 'Task2'
 
 
-# Calculates significance of difference between groups
+#---------------------------------------------------------------------------------------
+
 import pickle
 import matplotlib.pyplot as plt
 import random
@@ -11,7 +15,6 @@ import pandas as pd
 from scipy.stats import shapiro, ttest_rel, mannwhitneyu
 plt.style.use('dark_background')
 
-experiment_name = 'Task2'
 
 # loading the data
 with open(experiment_name + '/amplitudes_sep.p', 'rb') as f:
@@ -62,7 +65,7 @@ for i in range(len(keys)):
         else:
             # Mann-Whitney rank test
             p_values.append( (str(keys[i]), str(keys[j]), mannwhitneyu(amplitudes_sep[keys[i]][:mv], amplitudes_sep[keys[j]][:mv])[1]) )
-		
+
 # Bonferoni correction	
 thresh /= len(p_values) # divide by the number of comparisons
 
