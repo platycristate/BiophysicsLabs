@@ -61,10 +61,10 @@ shapiro_res = {key: shapiro(val)[1] for key, val in amplitudes_sep.items()}
 for i in range(len(keys)):
     for j in range(i+1, len(keys)):
         if shapiro_res[keys[i]] > thresh and shapiro_res[keys[j]] > thresh:
-            p_values.append( (str(keys[i]), str(keys[j]), ttest_rel(amplitudes_sep[keys[i]][:mv], amplitudes_sep[keys[j]][:mv])[1]) )
+            p_values.append( (str(keys[i]), str(keys[j]), ttest_rel(amplitudes_sep[keys[i]], amplitudes_sep[keys[j]])[1]) )
         else:
             # Mann-Whitney rank test
-            p_values.append( (str(keys[i]), str(keys[j]), mannwhitneyu(amplitudes_sep[keys[i]][:mv], amplitudes_sep[keys[j]][:mv])[1]) )
+            p_values.append( (str(keys[i]), str(keys[j]), mannwhitneyu(amplitudes_sep[keys[i]], amplitudes_sep[keys[j]])[1]) )
 
 # Bonferoni correction	
 thresh /= len(p_values) # divide by the number of comparisons
@@ -73,7 +73,7 @@ thresh /= len(p_values) # divide by the number of comparisons
 pval_df = pd.DataFrame(columns=keys, index=keys)
 for i in p_values:
 	if i[2] < thresh:
-		pval_df.loc[i[0], i[1]] = '<' + str(round(thresh, 3))
+		pval_df.loc[i[0], i[1]] = '<' + str(round(thresh, 4))
 pval_df.to_csv(experiment_name + '/Stats/t_tests_pvals.csv')
 
 # saving results of shapiro test
