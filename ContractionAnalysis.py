@@ -59,6 +59,7 @@ contrac_aligned = contrac - base
 fig, axs = plt.subplots(2, 1, figsize=(20, 8), dpi=130)
 
 axs[0].plot(time, contrac)
+axs[0].plot(time, base, color='red')
 for substance, times in substances.items():
 	axs[0].axvspan(*times, facecolor=next(color), edgecolor='None', alpha=0.5, label=substance)
 
@@ -77,9 +78,12 @@ axs[1].set(xlabel = 'time [min]')
 fig.savefig(experiment_name + '/General_traces.pdf')
 
 # Finding variables required for calculating amplitude, areas under peaks, half-widths
-
 aligned = BaselineRemoval(contrac_aligned)
 zhang = aligned.ZhangFit()
+
+fig, axs =  plt.subplots(figsize=(20, 4), dpi=130)
+axs.plot(time, zhang)
+fig.savefig(experiment_name + '/ZhangFit.pdf')
 
 # Determine threshold height of the peak
 max_val = np.where(zhang == zhang.max())[0][0]
