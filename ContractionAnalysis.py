@@ -59,7 +59,6 @@ contrac_aligned = contrac - base
 fig, axs = plt.subplots(2, 1, figsize=(20, 8), dpi=130)
 
 axs[0].plot(time, contrac)
-axs[0].plot(time, base, color='red')
 for substance, times in substances.items():
 	axs[0].axvspan(*times, facecolor=next(color), edgecolor='None', alpha=0.5, label=substance)
 
@@ -138,6 +137,7 @@ for idx, peak in enumerate(peaks):
             60000*time[left[idx]:right[idx]])
     areas.append(area)
 
+axs[0].plot(time, base, color='red')
 # Separating amplitudes, areas, half_widths
 amplitudes_sep = {key: [] for key in substances.keys()}
 areas_sep = {key: [] for key in substances.keys()}
