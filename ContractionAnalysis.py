@@ -94,6 +94,7 @@ right = right.astype(int)
 
 
 # to remove outliers; so called "temporary solution to the problem"
+# Calculaitng half-widths 
 half_widths, widths_heights_half, left_half, right_half = peak_widths(zhang, peaks, rel_height=0.5)
 half_widths *= Δt*60000
 
@@ -104,15 +105,10 @@ axs[0].plot(time[peaks], contrac_aligned[peaks], 'x')
 for ax, substance, times in zip(axs[1:], list(substances.keys()), list(substances.values())):
 	ax.plot(time, contrac_aligned, label=substance)
 	ax.legend()
-	ax.hlines(widths_heights_half, left_half*Δt, right_half*Δt, color='red')
+	ax.hlines(contrac_aligned[left_half.astype(int)], left_half*Δt, right_half*Δt, color='red')
 	ax.set_xlim(list(times))
 
 axs[-1].set(xlabel='time [min]')
-axs[1].plot(time, contrac_aligned)
-axs[1].hlines(contrac_aligned[left_half.astype(int)], left_half*Δt, right_half*Δt, color='red')
-axs[1].set(xlabel='time [min]')
-axs[1].set_xlim([30,35])
-
 fig.savefig(experiment_name + '/Peaks_half_widths_amplitude.pdf')
 
 # plotting limits of integratiobn
