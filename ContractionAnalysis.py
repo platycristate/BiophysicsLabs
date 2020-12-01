@@ -93,12 +93,7 @@ left = left.astype(int)
 right = right.astype(int)
 
 
-half_widths, widths_heights_half, left_half, right_half  = peak_widths(contrac_aligned, peaks, rel_height=0.5)
-half_widths *= Δt
-
 # to remove outliers; so called "temporary solution to the problem"
-outliers = half_widths < 2*peaks_distance*Δt
-half_widths, left_half, right_half = half_widths[outliers], left_half[outliers], right_half[outliers]
 half_widths, widths_heights_half, left_half, right_half = peak_widths(zhang, peaks, rel_height=0.5)
 half_widths *= Δt*60000
 
