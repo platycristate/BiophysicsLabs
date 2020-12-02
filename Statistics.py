@@ -8,6 +8,7 @@ experiment_name = 'Task2'
 #---------------------------------------------------------------------------------------
 
 import pickle
+import csv
 import matplotlib.pyplot as plt
 import random
 import numpy as np
@@ -71,9 +72,13 @@ thresh /= len(p_values) # divide by the number of comparisons
 
 # Find pairs with significant difference in their means
 pval_df = pd.DataFrame(columns=keys, index=keys)
+
 for i in p_values:
-	if i[2] < thresh:
-		pval_df.loc[i[0], i[1]] = '<' + str(round(thresh, 4))
+	if i[2] <= round(thresh, 4):
+		pval_df.loc[i[0], i[1]] = 'P<' + str(round(thresh, 4))
+	else:
+		pval_df.loc[i[0], i[1]] = 'P=' + str( round(i[2], 4))
+		
 pval_df.to_csv(experiment_name + '/Stats/t_tests_pvals.csv')
 
 # saving results of shapiro test
