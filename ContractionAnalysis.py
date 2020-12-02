@@ -81,10 +81,6 @@ fig.savefig(experiment_name + '/General_traces.pdf')
 aligned = BaselineRemoval(contrac_aligned)
 zhang = aligned.ZhangFit()
 
-fig, axs =  plt.subplots(figsize=(20, 4), dpi=130)
-axs.plot(time, zhang)
-fig.savefig(experiment_name + '/ZhangFit.pdf')
-
 # Determine threshold height of the peak
 max_val = np.where(zhang == zhang.max())[0][0]
 peaks_height = (zhang.max() - zhang[max_val-peaks_distance: max_val+peaks_distance].min()) * 0.2
@@ -96,17 +92,23 @@ widths, widths_heights, left, right = peak_widths(zhang, peaks,
 left = left.astype(int)
 right = right.astype(int)
 
+fig, axs = plt.subplots(2, 1, figsize=(20, 8), dpi=130)
+axs[0].plot(time, zhang, label='Full alignment')
+axs[1].plot(time, contrac_aligned, label='Found peaks')
+axs[1].plot(time[peaks], contrac_aligned[peaks], 'x')
+axs[1].set(xlabel='time[min]')
+axs[0].legend()
+axs[1].legend()
+fig.savefig(experiment_name + '/ZhangFit.pdf')
 
-# to remove outliers; so called "temporary solution to the problem"
-# Calculaitng half-widths 
+# Calculaitng half-widths
 half_widths, widths_heights_half, left_half, right_half = peak_widths(zhang, peaks, rel_height=0.5)
 half_widths *= Δt*60000
 
-fig, axs = plt.subplots(len(substances)+1, 1, figsize=(20, 4*(len(substances)+1)), dpi=130)
-axs[0].plot(time, contrac_aligned)
-axs[0].plot(time[peaks], contrac_aligned[peaks], 'x')
+fig, axs = plt.subplots(len(substances), 1, figsize=(20, 4*(len(substances))), dpi=130)
 
-for ax, substance, times in zip(axs[1:], list(substances.keys()), list(substances.values())):
+# plotting half-widths
+for ax, substance, times in zip(axs, list(substances.keys()), list(substances.values())):
 	ax.plot(time, contrac_aligned, label=substance)
 	ax.legend()
 	ax.hlines(contrac_aligned[left_half.astype(int)], left_half*Δt, right_half*Δt, color='red')
