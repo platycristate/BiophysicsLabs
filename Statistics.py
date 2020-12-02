@@ -4,7 +4,6 @@
 thresh = 0.05
 experiment_name = 'Task2'
 
-
 #---------------------------------------------------------------------------------------
 
 import pickle
@@ -46,7 +45,7 @@ plt.suptitle('Histograms for half-widths', fontsize=20)
 plt.savefig(experiment_name + '/Stats/histograms_hws.pdf')
 
 
-# t-test 
+# t-test and u-test
 keys = list(amplitudes_sep.keys())
 vals = amplitudes_sep.values()
 p_values = []
